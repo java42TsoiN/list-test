@@ -110,6 +110,8 @@ String initialStrings[] = {"name1", "name2"};
 		strings.add("name1");
 		String pattern = new String("name1");
 		assertEquals(0,strings.indexOf(pattern));
+		// V.R. It is necessary to add the following test
+		 assertEquals(-1, strings.indexOf("XXX"));
 	}
 	@Test
 	void testLastIndexOfPattern() {
@@ -117,8 +119,9 @@ String initialStrings[] = {"name1", "name2"};
 		strings.add("name1");
 		String pattern = new String("name3");
 		String pattern1 = new String("name1");
-		assertEquals(2,strings.LastIndexOf(pattern));
-		assertEquals(3,strings.LastIndexOf(pattern1));
+		// V.R. lastIndexOf instead of LastIndexOf
+		assertEquals(2,strings.lastIndexOf(pattern));
+		assertEquals(3,strings.lastIndexOf(pattern1));
 	}
 	@Test
 	void testIndexOfPredicate() {
@@ -140,13 +143,14 @@ String initialStrings[] = {"name1", "name2"};
 		strings.add("name1");
 		Predicate<Integer> predicateNumber= new EqualNumbersPredicate(13);
 		Predicate<Integer> predicateNumber2= new EqualNumbersPredicate(20);
-		assertEquals(-1,numbers.LastIndexOf(predicateNumber));
-		assertEquals(3,numbers.LastIndexOf(predicateNumber2));
-		
+		// V.R. lastIndexOf instead of LastIndexOf
+		assertEquals(-1,numbers.lastIndexOf(predicateNumber));
+		assertEquals(3,numbers.lastIndexOf(predicateNumber2));
 		Predicate<String> predicateString= new EqualStringsPredicate("name3");
 		Predicate<String> predicateString1= new EqualStringsPredicate("name1");
-		assertEquals(-1,strings.LastIndexOf(predicateString));
-		assertEquals(2,strings.LastIndexOf(predicateString1));
+		// V.R. lastIndexOf instead of LastIndexOf
+		assertEquals(-1,strings.lastIndexOf(predicateString));
+		assertEquals(2,strings.lastIndexOf(predicateString1));
 	}
 	
 	@Test
