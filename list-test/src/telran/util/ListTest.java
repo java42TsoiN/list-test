@@ -234,5 +234,23 @@ String initialStrings[] = {"name1", "name2"};
 		assertArrayEquals(expected, getArrayFromList(numbers));
 		
 	}
+	@Test
+	void removePattern() {
+			Integer  expected[] = {10,40};
+			Integer  expected1[] = {10,20,40};
+			Integer pattern = 20;
+			Integer pattern1 = -20;
+			numbers.remove(pattern1);
+			assertArrayEquals(expected1, getArrayFromList(numbers));
+			numbers.remove(pattern);
+			assertArrayEquals(expected, getArrayFromList(numbers));
+	}
+	@Test
+	void sortNatural() {
+		Integer  expected[] = {10,20,30,40};
+		numbers.add(30);
+		numbers.sort();
+		assertArrayEquals(expected, getArrayFromList(numbers));
+	}
 	
 }
