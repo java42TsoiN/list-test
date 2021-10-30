@@ -2,8 +2,10 @@ package telran.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 
+import javax.management.modelmbean.ModelMBeanNotificationBroadcaster;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -174,7 +176,9 @@ String initialStrings[] = {"name1", "name2"};
 		assertFalse(numbers.removeIf(greater25));
 		assertArrayEquals(expected, getArrayFromList(numbers));
 		assertTrue(numbers.removeIf(new GreaterNumberPredicate(0)));
-		assertArrayEquals(expectedEmpty, getArrayFromList(numbers));		
+		assertArrayEquals(expectedEmpty, getArrayFromList(numbers));
+		
+		
 		
 	}
 	@Test
@@ -184,12 +188,51 @@ String initialStrings[] = {"name1", "name2"};
 		otherNumbers.add(20);
 		otherNumbers.add(40);
 		assertTrue(numbers.removeAll(otherNumbers));
-		Integer expected[]= {10};
-		assertEquals(expected, getArrayFromList(numbers));
+		Integer expected[] = {10};
+		assertArrayEquals(expected, getArrayFromList(numbers));
+		assertFalse(numbers.removeAll(otherNumbers));
 	}
 	@Test
 	void removeAllSame() {
 		assertTrue(numbers.removeAll(numbers));
 		assertArrayEquals(new Integer[0], getArrayFromList(numbers));
 	}
+
+	@Test
+	void containTest() {
+		assertTrue(numbers.contains(20));
+		assertFalse(numbers.contains(25));
+		numbers.add(25);
+		assertTrue(numbers.contains(25));
+	}
+	@Test
+	void comparatorTest() {
+		String  expected[] = {"name1","name2","name3","name4"};
+		strings.add("name4");
+		strings.add("name3");
+		strings.sort(new StringComparator());
+		assertArrayEquals(expected, getArrayFromList(strings));
+	}
+	@Test
+	void comparatorIntTest() {
+		Integer  expected[] = {10,20,30,40};
+		numbers.add(30);
+		
+		numbers.sort(new IntegerComparator());
+		assertArrayEquals(expected, getArrayFromList(numbers));
+	}
+	@Test
+	void retainAll() {
+		Integer  expected[] = {10};
+		Integer  expected1[] = {10,20,40};
+		List<Integer> retain = new ArrayList<>();
+		numbers.retainAll(numbers);
+		assertArrayEquals(expected1, getArrayFromList(numbers));
+		
+		retain.add(10);
+		numbers.retainAll(retain);
+		assertArrayEquals(expected, getArrayFromList(numbers));
+		
+	}
+	
 }
