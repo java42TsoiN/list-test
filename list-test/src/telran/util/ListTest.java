@@ -2,15 +2,15 @@ package telran.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.function.Predicate;
 
-import javax.management.modelmbean.ModelMBeanNotificationBroadcaster;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ListTest {
+private static final int N_NUMBERS_PERFOMANCE = 100;
 private List<Integer> numbers;
 private List<String> strings;
 Integer initialNumbers[] = {10, 20, 40};
@@ -22,7 +22,8 @@ String initialStrings[] = {"name1", "name2"};
 	}
 
 	private List<String> getInitialStrings() {
-		List<String> res = new ArrayList<>();
+		//List<String> res = new ArrayList<>();
+		List<String> res = new LinkedList<>();
 		for (int i = 0; i < initialStrings.length; i++) {
 			res.add(initialStrings[i]);
 		}
@@ -30,14 +31,14 @@ String initialStrings[] = {"name1", "name2"};
 	}
 
 	private List<Integer> getInitialNumbers() {
-		
-		List<Integer> res = new ArrayList<>(1);
+
+		//List<Integer> res = new ArrayList<>(1);
+		List<Integer> res = new LinkedList<>();
 		for (int i = 0; i < initialNumbers.length; i++) {
 			res.add(initialNumbers[i]);
 		}
 		return res;
 	}
-
 	@Test
 	void testGet() {
 		assertEquals(10, numbers.get(0));
@@ -45,8 +46,6 @@ String initialStrings[] = {"name1", "name2"};
 		assertNull(numbers.get(-1));
 		assertNull(numbers.get(3));
 		
-
-
 	}
 	@Test
 	void testAddAtIndex() {
@@ -104,7 +103,8 @@ String initialStrings[] = {"name1", "name2"};
 	void testContainsPersons() {
 		Person prs = new Person(123, "Moshe");
 		Person prs2 = new Person(124, "Vasya");
-		List<Person> persons = new ArrayList<>();
+//		List<Person> persons = new ArrayList<>();
+		List<Person> persons = new LinkedList<>();
 		persons.add(prs);
 		persons.add(prs2);
 		assertTrue(persons.contains(new Person(124, "Vasya")));
@@ -126,9 +126,7 @@ String initialStrings[] = {"name1", "name2"};
 		assertFalse(strings.contains(predicateMain));
 		assertTrue(strings.contains(predicateName));
 		
-		
 	}
-
 	@SuppressWarnings("unchecked")
 	private <T> T[] getArrayFromList(List<T> list) {
 		int size = list.size();
@@ -197,60 +195,76 @@ String initialStrings[] = {"name1", "name2"};
 		assertTrue(numbers.removeAll(numbers));
 		assertArrayEquals(new Integer[0], getArrayFromList(numbers));
 	}
-
 	@Test
-	void containTest() {
-		assertTrue(numbers.contains(20));
-		assertFalse(numbers.contains(25));
-		numbers.add(25);
-		assertTrue(numbers.contains(25));
-	}
-	@Test
-	void comparatorTest() {
-		String  expected[] = {"name1","name2","name3","name4"};
-		strings.add("name4");
-		strings.add("name3");
-		strings.sort(new StringComparator());
-		assertArrayEquals(expected, getArrayFromList(strings));
-	}
-	@Test
-	void comparatorIntTest() {
-		Integer  expected[] = {10,20,30,40};
-		numbers.add(30);
-		
-		numbers.sort(new IntegerComparator());
+	void retainAllTest() {
+		numbers.add(20);
+		List<Integer> otherNumbers = new ArrayList<>();
+		otherNumbers.add(20);
+		otherNumbers.add(40);
+		assertTrue(numbers.retainAll(otherNumbers));
+		Integer expected[] = {20,40,20};
 		assertArrayEquals(expected, getArrayFromList(numbers));
+		assertFalse(numbers.retainAll(otherNumbers));
 	}
 	@Test
-	void retainAll() {
-		Integer  expected[] = {10};
-		Integer  expected1[] = {10,20,40};
-		List<Integer> retain = new ArrayList<>();
-		numbers.retainAll(numbers);
+	void retainAllSame() {
+		assertFalse(numbers.retainAll(numbers));
+		assertArrayEquals(initialNumbers, getArrayFromList(numbers));
+	}
+	
+	@Test
+	void removeObjectTest() {
+		Integer expected0[] = {20, 40};
+		Integer expected1[] = {20};
+		assertNull(numbers.remove((Integer)25));
+		assertEquals(10, numbers.remove((Integer)10));
+		assertArrayEquals(expected0, getArrayFromList(numbers));
+		assertEquals(40, numbers.remove((Integer)40));
 		assertArrayEquals(expected1, getArrayFromList(numbers));
-		
-		retain.add(10);
-		numbers.retainAll(retain);
-		assertArrayEquals(expected, getArrayFromList(numbers));
-		
 	}
 	@Test
-	void removePattern() {
-			Integer  expected[] = {10,40};
-			Integer  expected1[] = {10,20,40};
-			Integer pattern = 20;
-			Integer pattern1 = -20;
-			numbers.remove(pattern1);
-			assertArrayEquals(expected1, getArrayFromList(numbers));
-			numbers.remove(pattern);
-			assertArrayEquals(expected, getArrayFromList(numbers));
-	}
-	@Test
-	void sortNatural() {
-		Integer  expected[] = {10,20,30,40};
-		numbers.add(30);
+	void sortNaturalTest() {
+		numbers.add(40);
+		numbers.add(10);
+		numbers.add(20);
+		Integer expected[] = {10, 10, 20, 20, 40, 40};
 		numbers.sort();
 		assertArrayEquals(expected, getArrayFromList(numbers));
 	}
+	@Test
+	void sortComparatorTest() {
+		Integer expectedReverse[] = {40, 20, 10};
+		Integer expectedProximity23[] = {20, 10, 40}; //sorted per proximity to 23
+		Comparator<Integer> compNatural = Comparator.naturalOrder();
+		numbers.sort(compNatural.reversed());
+		assertArrayEquals(expectedReverse, getArrayFromList(numbers));
+//		numbers.sort(new ProximityNumberComparator(23));
+//		assertArrayEquals(expectedProximity23, getArrayFromList(numbers));
+	}
+	@Test
+	void removeIfPerfomanceTest() {
+		List<Integer> list = new LinkedList<>();
+//		List<Integer> list = new ArrayList<>();
+		fillListPerfomance(list);
+		Predicate<Integer> divider4Predicate = new Divider4Predicate();
+		list.removeIf(divider4Predicate);
+		assertEquals(-1, list.indexOf(divider4Predicate));
+	}
+
+	private void fillListPerfomance(List<Integer> list) {
+		for(int i=0;i<N_NUMBERS_PERFOMANCE;i++) {
+			list.add((int)(Math.random()*Integer.MAX_VALUE));
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
