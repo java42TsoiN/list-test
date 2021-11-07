@@ -22,7 +22,7 @@ String initialStrings[] = {"name1", "name2"};
 	}
 
 	private List<String> getInitialStrings() {
-		//List<String> res = new ArrayList<>();
+//		List<String> res = new ArrayList<>();
 		List<String> res = new LinkedList<>();
 		for (int i = 0; i < initialStrings.length; i++) {
 			res.add(initialStrings[i]);
@@ -39,6 +39,13 @@ String initialStrings[] = {"name1", "name2"};
 		}
 		return res;
 	}
+	@Test
+	void sortedSearchExist() {
+		assertEquals(-1, numbers.sortedSearch(5));
+		assertEquals(1, numbers.sortedSearch(20));
+		assertEquals(2, numbers.sortedSearch(40));
+	}
+	
 	@Test
 	void testGet() {
 		assertEquals(10, numbers.get(0));
