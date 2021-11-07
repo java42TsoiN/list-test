@@ -34,8 +34,8 @@ String initialStrings[] = {"name1", "name2"};
 
 		//List<Integer> res = new ArrayList<>(1);
 		List<Integer> res = new LinkedList<>();
-		for (int i = 0; i < initialNumbers.length; i++) {
-			res.add(initialNumbers[i]);
+		for (int num:initialNumbers) {
+			res.add(num);
 		}
 		return res;
 	}
@@ -138,9 +138,9 @@ String initialStrings[] = {"name1", "name2"};
 	private <T> T[] getArrayFromList(List<T> list) {
 		int size = list.size();
 		T[] res = (T[]) new Object[size];
-		
-		for (int i = 0; i < size; i++) {
-			res[i] = list.get(i);
+		int resInd=0;
+		for(T obj:list) {
+			res[resInd++]=obj;
 		}
 		return res;
 	}
@@ -265,7 +265,10 @@ String initialStrings[] = {"name1", "name2"};
 		
 	}
 	
-	
+	@Test
+	void removeByIteratorTest() {
+		//TODO test for checking method remove of ArrayListIterator
+	}
 	
 	
 	
