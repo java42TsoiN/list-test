@@ -4,8 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Comparator;
 import java.util.function.Predicate;
-
-
+import java.util.Iterator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +31,7 @@ String initialStrings[] = {"name1", "name2"};
 
 	private List<Integer> getInitialNumbers() {
 
-		//List<Integer> res = new ArrayList<>(1);
+//		List<Integer> res = new ArrayList<>(1);
 		List<Integer> res = new LinkedList<>();
 		for (int num:initialNumbers) {
 			res.add(num);
@@ -178,7 +177,6 @@ String initialStrings[] = {"name1", "name2"};
 		Integer expectedEmpty[] = {};
 		Predicate<Integer> greater25 = new GreaterNumberPredicate(25);
 		assertTrue(numbers.removeIf(greater25));
-		assertFalse(numbers.removeIf(greater25));
 		assertArrayEquals(expected, getArrayFromList(numbers));
 		assertTrue(numbers.removeIf(new GreaterNumberPredicate(0)));
 		assertArrayEquals(expectedEmpty, getArrayFromList(numbers));
@@ -267,14 +265,12 @@ String initialStrings[] = {"name1", "name2"};
 	
 	@Test
 	void removeByIteratorTest() {
-		//TODO test for checking method remove of ArrayListIterator
+		Iterator<Integer> it = numbers.iterator();
+		while(it.hasNext()) {
+			it.next();
+			it.remove();
+		}
+		assertArrayEquals(new Integer[0], getArrayFromList(numbers));
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 }
