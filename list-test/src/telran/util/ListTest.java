@@ -21,8 +21,8 @@ String initialStrings[] = {"name1", "name2"};
 	}
 
 	private List<String> getInitialStrings() {
-//		List<String> res = new ArrayList<>();
-		List<String> res = new LinkedList<>();
+		List<String> res = new ArrayList<>();
+//		List<String> res = new LinkedList<>();
 		for (int i = 0; i < initialStrings.length; i++) {
 			res.add(initialStrings[i]);
 		}
@@ -31,8 +31,8 @@ String initialStrings[] = {"name1", "name2"};
 
 	private List<Integer> getInitialNumbers() {
 
-//		List<Integer> res = new ArrayList<>(1);
-		List<Integer> res = new LinkedList<>();
+		List<Integer> res = new ArrayList<>(1);
+//		List<Integer> res = new LinkedList<>();
 		for (int num:initialNumbers) {
 			res.add(num);
 		}
@@ -119,16 +119,16 @@ String initialStrings[] = {"name1", "name2"};
 	}
 	@Test
 	void containsPredicateNumbersTest() {
-		Predicate<Integer> predicate100 = new GreaterNumberPredicate(100);
-		Predicate<Integer> predicate25 = new GreaterNumberPredicate(25);
+		Predicate<Integer> predicate100 = t-> t>100; /*TODO rewrite code without any Predicate class*/
+		Predicate<Integer> predicate25 = t-> t>25;  /*TODO rewrite code without any Predicate class*/
 		assertFalse(numbers.contains(predicate100));
 		assertTrue(numbers.contains(predicate25));
 		
 	}
 	@Test
 	void containsPredicateStringsTest() {
-		Predicate<String> predicateName = new StartWithPredicate("name");
-		Predicate<String> predicateMain = new StartWithPredicate("main");
+		Predicate<String> predicateName =t->t.startsWith("name");  /*TODO rewrite code without any Predicate class*/
+		Predicate<String> predicateMain =t->t.startsWith("main");  /*TODO rewrite code without any Predicate class*/
 		assertFalse(strings.contains(predicateMain));
 		assertTrue(strings.contains(predicateName));
 		
@@ -161,24 +161,31 @@ String initialStrings[] = {"name1", "name2"};
 	}
 	@Test
 	void indexOfPredicate() {
-		assertEquals(2, numbers.indexOf(new GreaterNumberPredicate(25)));
-		assertEquals(0, numbers.indexOf(new GreaterNumberPredicate(5)));
-		assertEquals(-1, numbers.indexOf(new GreaterNumberPredicate(45)));
+		Predicate<Integer> greater25 = t-> t>25; 
+		Predicate<Integer> greater5 = t-> t>5; 
+		Predicate<Integer> greater45 = t-> t>45; 
+		assertEquals(2, numbers.indexOf(greater25));
+		assertEquals(0, numbers.indexOf(greater5));
+		assertEquals(-1,numbers.indexOf(greater45));
 	}
 	@Test
 	void lastIndexOfPredicate() {
-		assertEquals(2, numbers.lastIndexOf(new GreaterNumberPredicate(25)));
-		assertEquals(2, numbers.lastIndexOf(new GreaterNumberPredicate(5)));
-		assertEquals(-1, numbers.lastIndexOf(new GreaterNumberPredicate(45)));
+		Predicate<Integer> greater25 = t-> t>25; 
+		Predicate<Integer> greater5 = t-> t>5; 
+		Predicate<Integer> greater45 = t-> t>45; 
+		assertEquals(2, numbers.lastIndexOf(greater25));
+		assertEquals(2, numbers.lastIndexOf(greater5));
+		assertEquals(-1,numbers.lastIndexOf(greater45));
 	}
 	@Test
 	void removeIfTest() {
 		Integer expected[] = {10, 20};
 		Integer expectedEmpty[] = {};
-		Predicate<Integer> greater25 = new GreaterNumberPredicate(25);
+		Predicate<Integer> greater25 = t-> t>25;  /*TODO rewrite code without any Predicate class*/
 		assertTrue(numbers.removeIf(greater25));
 		assertArrayEquals(expected, getArrayFromList(numbers));
-		assertTrue(numbers.removeIf(new GreaterNumberPredicate(0)));
+		Predicate<Integer> predicate = t->t>0; 
+		assertTrue( numbers.removeIf(predicate));
 		assertArrayEquals(expectedEmpty, getArrayFromList(numbers));
 		
 		
@@ -243,15 +250,20 @@ String initialStrings[] = {"name1", "name2"};
 		Comparator<Integer> compNatural = Comparator.naturalOrder();
 		numbers.sort(compNatural.reversed());
 		assertArrayEquals(expectedReverse, getArrayFromList(numbers));
-//		numbers.sort(new ProximityNumberComparator(23));
-//		assertArrayEquals(expectedProximity23, getArrayFromList(numbers));
+		Integer number=23;
+		Comparator<Integer> ProximityNumberComparator =(o1, o2)-> {
+			return  Math.abs(number - o1) - Math.abs(number - o2);
+		};
+		
+		numbers.sort(ProximityNumberComparator);
+		assertArrayEquals(expectedProximity23, getArrayFromList(numbers));
 	}
 	@Test
 	void removeIfPerfomanceTest() {
 		List<Integer> list = new LinkedList<>();
 //		List<Integer> list = new ArrayList<>();
 		fillListPerfomance(list);
-		Predicate<Integer> divider4Predicate = new Divider4Predicate();
+		Predicate<Integer> divider4Predicate =t->t%4==0;  /*TODO rewrite code without any Predicate class*/;
 		list.removeIf(divider4Predicate);
 		assertEquals(-1, list.indexOf(divider4Predicate));
 	}
